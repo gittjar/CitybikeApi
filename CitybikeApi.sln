@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1705.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitybikeApi", "CitybikeApi\CitybikeApi.csproj", "{A2C786E8-8EC0-41AF-8B5E-CA240221635E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2C786E8-8EC0-41AF-8B5E-CA240221635E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2C786E8-8EC0-41AF-8B5E-CA240221635E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2C786E8-8EC0-41AF-8B5E-CA240221635E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2C786E8-8EC0-41AF-8B5E-CA240221635E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2C836853-3BDE-4214-955E-D945694F1191}
+	EndGlobalSection
+EndGlobal
