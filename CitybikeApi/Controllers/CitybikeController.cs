@@ -31,7 +31,6 @@ namespace CitybikeApi.Controllers
             return await _context.Station.ToListAsync();
         }
 
-
           private bool StationExists(int id)
            {
                return (_context.Station?.Any(e => e.FID == id)).GetValueOrDefault();
