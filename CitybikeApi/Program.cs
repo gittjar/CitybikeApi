@@ -19,6 +19,10 @@ builder.Services.AddDbContext<CitybikeDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
     throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
 
+builder.Services.AddDbContext<CitybiketripsMay2021DBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
+    throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
