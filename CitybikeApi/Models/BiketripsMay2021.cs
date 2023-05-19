@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CitybikeApi.Models
 {
-
+	// Keyless model for API
     [Keyless]
     public class BiketripsMay2021
 	{

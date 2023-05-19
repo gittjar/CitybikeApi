@@ -22,6 +22,7 @@ namespace CitybikeApi.Controllers
 		}
 
         // GET: api/CitybikeTripsMay2021
+        // Keyless no ID -> see BiketripsMay2021.cs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketripsMay2021()
         {
@@ -32,15 +33,7 @@ namespace CitybikeApi.Controllers
             return await _context.BiketripsMay2021.ToListAsync();
 
         }
-        /*
-        private bool BiketripsMay2021Exists(int id)
-        {
-            return (_context.BiketripsMay2021?.Any(e => e.Duration_sec == id)).GetValueOrDefault();
-        }
-        */
-
-
-
+     
     }
 }
 

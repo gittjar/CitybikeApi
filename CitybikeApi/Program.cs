@@ -20,8 +20,8 @@ builder.Services.AddDbContext<CitybikeDBContext>(options =>
     throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
 
 builder.Services.AddDbContext<CitybiketripsMay2021DBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
-    throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CitybiketripsMay2021DBContext") ??
+    throw new InvalidOperationException("Connection string 'CitybiketripsMay2021DBContext' not found.")));
 
 var app = builder.Build();
 
