@@ -23,7 +23,7 @@ namespace CitybikeApi.Controllers
 
         // GET: api/CitybikeTripsMay2021
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketripsMay2021(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketripsMay2021(int pageNumber = 1, int pageSize = 500)
         {
             if (_context.BiketripsMay2021 == null)
             {
@@ -37,8 +37,8 @@ namespace CitybikeApi.Controllers
 
             var biketripsmay2021 = await _context.BiketripsMay2021
                 .OrderBy(c => c.Departure)
-              //  .ThenBy(c => c.Return)
-                .Distinct()
+                .ThenBy(c => c.Return)
+                .Distinct() // take only 1 item
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
