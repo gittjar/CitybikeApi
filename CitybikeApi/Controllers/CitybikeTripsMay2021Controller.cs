@@ -32,6 +32,7 @@ namespace CitybikeApi.Controllers
 
             var skip = (pageNumber - 1) * pageSize;
             var take = pageSize;
+            
 
             var totalTrips = await _context.BiketripsMay2021.CountAsync();
 
@@ -43,12 +44,16 @@ namespace CitybikeApi.Controllers
                 .Take(take)
                 .ToListAsync();
 
+            var totalPages = totalTrips / 500; // trips per page = 500
+
             var result = new
             {
                 TotalItems = totalTrips,
                 PageNumber = pageNumber,
                 PageSize = pageSize,
+                TotalPages = totalPages,
                 Data = biketripsmay2021
+
             };
 
             return Ok(result);
