@@ -8,65 +8,70 @@ using CitybikeApi.Models;
 namespace CitybikeApi.Controllers
 
 {
-
+    // API Route Stations by name
     [Route("api/[controller]")]
     [ApiController]
-    public class StationsController : ControllerBase
+    public class StationsByNameController : ControllerBase
     {
         private readonly CitybikeDBContext _context;
 
-        public StationsController(CitybikeDBContext context)
+        public StationsByNameController(CitybikeDBContext context)
         {
             _context = context;
         }
 
-        // GET: api/Stations
+        // GET: api/StationsByName
+        // Text search works for example = https://localhost:7297/api/StationsByName?text=rautatie
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Station>>> GetStations(int pageNumber = 1, int pageSize = 30)
+        public async Task<ActionResult<IEnumerable<Station>>> GetStations(string text)
         {
-            if (_context.Station == null)
+            if (_context.StationByName == null)
             {
                 return NotFound();
             }
 
-            var skip = (pageNumber - 1) * pageSize;
-            var take = pageSize;
-
-
-            var totalStations = await _context.Station.CountAsync();
-
-            var citybikestations = await _context.Station
-                .OrderBy(c => c.Name)
-                .ThenBy(c => c.Osoite)
-                .Distinct() // take only 1 item
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
-
-            var totalPages = totalStations / 30; // 1 sivu = 30 asemaa
-
-            var result = new
+            if (!string.IsNullOrEmpty(text))
             {
-                TotalItems = totalStations,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalPages = totalPages,
-                Data = citybikestations,
+                return await _context.StationByName
+                    .Where(s => s.Nimi.Contains(text))
+                    .ToListAsync();
+            }
 
-            };
-
-            return Ok(result);
-
-
+            return await _context.StationByName.ToListAsync();
 
             // return await _context.Station.ToListAsync();
         }
-
-          private bool StationExists(int id)
-           {
-               return (_context.Station?.Any(e => e.FID == id)).GetValueOrDefault();
-           }
     }
-}
+        // ALL STATIONS
+        [Route("api/[controller]")]
+        [ApiController]
+        public class StationsController : ControllerBase
+        {
+            private readonly CitybikeDBContext _context;
+
+            public StationsController(CitybikeDBContext context)
+            {
+                _context = context;
+            }
+
+            // GET: api/Stations
+            [HttpGet]
+            public async Task<ActionResult<IEnumerable<Station>>> GetStations()
+            {
+                if (_context.StationByName == null)
+                {
+                    return NotFound();
+                }
+                return await _context.StationByName.ToListAsync();
+
+            }
+
+            private bool StationExists(int id)
+            {
+                return (_context.Station?.Any(e => e.FID == id)).GetValueOrDefault();
+            }
+        }
+    }
+
 
 
