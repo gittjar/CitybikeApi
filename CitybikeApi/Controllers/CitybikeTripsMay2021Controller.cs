@@ -12,14 +12,14 @@ namespace CitybikeApi.Controllers
     [ApiController]
 
     public class CitybikeTripsMay2021Controller : ControllerBase
-	{
-		private CitybiketripsMay2021DBContext _context;
+    {
+        private CitybiketripsMay2021DBContext _context;
 
 
-		public CitybikeTripsMay2021Controller(CitybiketripsMay2021DBContext context)
-		{
-			_context = context;
-		}
+        public CitybikeTripsMay2021Controller(CitybiketripsMay2021DBContext context)
+        {
+            _context = context;
+        }
 
         // GET: api/CitybikeTripsMay2021
         [HttpGet]
@@ -32,7 +32,7 @@ namespace CitybikeApi.Controllers
 
             var skip = (pageNumber - 1) * pageSize;
             var take = pageSize;
-            
+
 
             var totalTrips = await _context.BiketripsMay2021.CountAsync();
 
@@ -58,11 +58,11 @@ namespace CitybikeApi.Controllers
 
             return Ok(result);
 
-
-
-          //  return await _context.BiketripsMay2021.ToListAsync();
-
         }
+
+        //  return await _context.BiketripsMay2021.ToListAsync();
+
+    }
         /*
         private bool BiketripsMay2021Exists(int id)
         {
@@ -70,8 +70,35 @@ namespace CitybikeApi.Controllers
         }
         */
 
+        [Route("api/[controller]")]
+        [ApiController]
+
+        public class CitybikeTripsController : ControllerBase
+        {
+            private CitybiketripsMay2021DBContext _context;
 
 
-    }
+            public CitybikeTripsController(CitybiketripsMay2021DBContext context)
+            {
+                _context = context;
+            }
+
+            // GET: api/CitybikeTrips
+            [HttpGet]
+            public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketrips()
+            {
+                if (_context.Biketrips == null)
+                {
+                    return NotFound();
+                }
+
+
+                return await _context.Biketrips.ToListAsync();
+
+
+
+            }
+        }
+    
 }
 

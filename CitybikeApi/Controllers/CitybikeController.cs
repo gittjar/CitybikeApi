@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using CitybikeApi.Data;
 using CitybikeApi.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CitybikeApi.Controllers
 
@@ -22,28 +23,28 @@ namespace CitybikeApi.Controllers
 
         // GET: api/StationsByName
         // Text search works for example = https://localhost:7297/api/StationsByName?text=rautatie
-        [HttpGet]
+        // with text --> https://localhost:7297/rautatie
+        [HttpGet("/{text}")]
         public async Task<ActionResult<IEnumerable<Station>>> GetStations(string text)
         {
             if (_context.StationByName == null)
             {
                 return NotFound();
             }
-
-            if (!string.IsNullOrEmpty(text))
-            {
+  
                 return await _context.StationByName
                     .Where(s => s.Nimi.Contains(text))
-                    .ToListAsync();
-            }
-
-            return await _context.StationByName.ToListAsync();
-
+                    .ToListAsync();      
+            
+           
             // return await _context.Station.ToListAsync();
         }
     }
-        // ALL STATIONS
-        [Route("api/[controller]")]
+
+
+
+    // ALL STATIONS
+    [Route("api/[controller]")]
         [ApiController]
         public class StationsController : ControllerBase
         {

@@ -11,6 +11,8 @@ namespace CitybikeApi.Data
         }
 
         public DbSet<CitybikeApi.Models.BiketripsMay2021> BiketripsMay2021 { get; set; } = default!;
+        public DbSet<CitybikeApi.Models.BiketripsMay2021> Biketrips { get; set; } = default!;
+
     }
 
 }
