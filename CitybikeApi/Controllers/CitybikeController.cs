@@ -71,8 +71,29 @@ namespace CitybikeApi.Controllers
             {
                 return (_context.Station?.Any(e => e.FID == id)).GetValueOrDefault();
             }
+
+
+        // GET: api/Stations/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Station>> GetStations(int id)
+        {
+
+
+            if (_context.StationById == null)
+            {
+                return NotFound();
+            }
+
+            return await _context.StationById.FindAsync(id);
+
         }
+
     }
+}
+
+
+
+
 
 
 
