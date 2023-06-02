@@ -22,9 +22,8 @@ namespace CitybikeApi.Controllers
         }
 
         // GET: api/StationsByName
-        // Text search works for example = https://localhost:7297/api/StationsByName?text=rautatie
-        // with text --> https://localhost:7297/rautatie
-        [HttpGet("/{text}")]
+        // with text --> https://localhost:7297/api/Stationbyname/rautatie
+        [HttpGet("{text}")]
         public async Task<ActionResult<IEnumerable<Station>>> GetStations(string text)
         {
             if (_context.StationByName == null)
