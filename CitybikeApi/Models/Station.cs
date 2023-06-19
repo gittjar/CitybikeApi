@@ -20,6 +20,7 @@ namespace CitybikeApi.Models
         public int Kapasiteet { get; set; }
         public decimal x { get; set; }
         public decimal y { get; set; }
+        public string? Kuva { get; set; }
 
     }
 

@@ -22,7 +22,7 @@ namespace CitybikeApi.Controllers
         }
 
         // GET: api/StationsByName
-        // with text --> https://localhost:7297/api/Stationbyname/rautatie
+        // with text --> https://localhost:7297/api/StationByName/haaga
         [HttpGet("{text}")]
         public async Task<ActionResult<IEnumerable<Station>>> GetStations(string text)
         {
@@ -89,10 +89,3 @@ namespace CitybikeApi.Controllers
 
     }
 }
-
-
-
-
-
-
-
