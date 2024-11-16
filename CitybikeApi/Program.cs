@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// UseSqlServer
+// Configure Entity Framework and SQL Server
 builder.Services.AddDbContext<CitybikeDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
     throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
@@ -23,6 +23,15 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citybike API V1");
+        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    });
+}
+else
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
