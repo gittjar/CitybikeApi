@@ -39,9 +39,6 @@ namespace CitybikeApi.Controllers
             // return await _context.Station.ToListAsync();
         }
     }
-
-
-
     // ALL STATIONS
     [Route("api/[controller]")]
         [ApiController]
