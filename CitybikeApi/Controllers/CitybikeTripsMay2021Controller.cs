@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 using CitybikeApi.Data;
 using CitybikeApi.Models;
-
 
 namespace CitybikeApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class CitybikeTripsMay2021Controller : ControllerBase
     {
-        private CitybiketripsMay2021DBContext _context;
-
+        private readonly CitybiketripsMay2021DBContext _context;
 
         public CitybikeTripsMay2021Controller(CitybiketripsMay2021DBContext context)
         {
@@ -23,28 +22,57 @@ namespace CitybikeApi.Controllers
 
         // GET: api/CitybikeTripsMay2021
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketripsMay2021(int pageNumber = 1, int pageSize = 500)
+        public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketripsMay2021(
+            int pageNumber = 1, 
+            int pageSize = 500, 
+            string sortBy = "departure", 
+            string sortOrder = "asc", 
+            string search = "")
         {
             if (_context.BiketripsMay2021 == null)
             {
                 return NotFound();
             }
 
+            var query = _context.BiketripsMay2021.AsQueryable();
+
+            // Apply search filter
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t => t.Departure.ToString().Contains(search) || t.Return.ToString().Contains(search));
+            }
+
+            // Apply sorting
+            switch (sortBy.ToLower())
+            {
+                case "departure":
+                    query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.Departure) : query.OrderBy(t => t.Departure);
+                    break;
+                case "return":
+                    query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.Return) : query.OrderBy(t => t.Return);
+                    break;
+                case "duration":
+                    query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.Duration_sec) : query.OrderBy(t => t.Duration_sec);
+                    break;
+                case "distance":
+                    query = sortOrder.ToLower() == "desc" ? query.OrderByDescending(t => t.Covered_distance_m) : query.OrderBy(t => t.Covered_distance_m);
+                    break;
+                default:
+                    query = query.OrderBy(t => t.Departure);
+                    break;
+            }
+
+            var totalTrips = await query.CountAsync();
+
             var skip = (pageNumber - 1) * pageSize;
             var take = pageSize;
 
-
-            var totalTrips = await _context.BiketripsMay2021.CountAsync();
-
-            var biketripsmay2021 = await _context.BiketripsMay2021
-                .OrderBy(c => c.Departure)
-                .ThenBy(c => c.Return)
-                .Distinct() // take only 1 item
+            var biketripsmay2021 = await query
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
 
-            var totalPages = totalTrips / 500; // trips per page = 500
+            var totalPages = (int)Math.Ceiling(totalTrips / (double)pageSize);
 
             var result = new
             {
@@ -53,52 +81,9 @@ namespace CitybikeApi.Controllers
                 PageSize = pageSize,
                 TotalPages = totalPages,
                 Data = biketripsmay2021
-
             };
 
             return Ok(result);
-
         }
-
-        //  return await _context.BiketripsMay2021.ToListAsync();
-
     }
-        /*
-        private bool BiketripsMay2021Exists(int id)
-        {
-            return (_context.BiketripsMay2021?.Any(e => e.Duration_sec == id)).GetValueOrDefault();
-        }
-        */
-
-        [Route("api/[controller]")]
-        [ApiController]
-
-        public class CitybikeTripsController : ControllerBase
-        {
-            private CitybiketripsMay2021DBContext _context;
-
-
-            public CitybikeTripsController(CitybiketripsMay2021DBContext context)
-            {
-                _context = context;
-            }
-
-            // GET: api/CitybikeTrips
-            [HttpGet]
-            public async Task<ActionResult<IEnumerable<BiketripsMay2021>>> GetBiketrips()
-            {
-                if (_context.Biketrips == null)
-                {
-                    return NotFound();
-                }
-
-
-                return await _context.Biketrips.ToListAsync();
-
-
-
-            }
-        }
-    
 }
-
