@@ -9,6 +9,9 @@ https://github.com/gittjar/CitybikeFrontend
 
 API in Cloud >
 
+Swagger:
+https://citybikeapi.azurewebsites.net/
+
 All stations:
 https://citybikeapi.azurewebsites.net/api/Stations
 

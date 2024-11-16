@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CitybikeApi;
 using CitybikeApi.Data;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure Entity Framework and SQL Server
 builder.Services.AddDbContext<CitybikeDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
     throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
@@ -21,25 +21,22 @@ builder.Services.AddDbContext<CitybiketripsMay2021DBContext>(options =>
 
 var app = builder.Build();
 
+// Serve the custom CSS file from the same directory as Program.cs
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)),
+    RequestPath = "/static"
+});
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citybike API V1");
-        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-    });
-}
-else
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citybike API V1");
-        c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citybike API V1");
+    c.InjectStylesheet("/static/swagger-custom.css"); // Inject custom CSS
+    c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+});
 
 app.UseHttpsRedirection();
 
