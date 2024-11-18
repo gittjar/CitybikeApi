@@ -21,7 +21,7 @@ builder.Services.AddDbContext<CitybiketripsMay2021DBContext>(options =>
 
 var app = builder.Build();
 
-// Serve the custom CSS file from the same directory as Program.cs
+// Serve static files from the project's root directory
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
@@ -35,6 +35,7 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citybike API V1");
     c.InjectStylesheet("/static/swagger-custom.css"); // Inject custom CSS
+    c.DocumentTitle = "Citybike API Documentation"; // Set custom page title
     c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
 });
 
