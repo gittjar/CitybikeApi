@@ -85,5 +85,33 @@ namespace CitybikeApi.Controllers
 
             return Ok(result);
         }
+
+        // GET: api/CitybikeTripsMay2021/TopDepartureStations
+        [HttpGet("TopDepartureStations")]
+        public async Task<ActionResult<IEnumerable<object>>> GetTopDepartureStations()
+        {
+            var topDepartureStations = await _context.BiketripsMay2021
+                .GroupBy(t => t.Departure_station_name)
+                .Select(g => new { Station = g.Key, Count = g.Count() })
+                .OrderByDescending(g => g.Count)
+                .Take(10)
+                .ToListAsync();
+
+            return Ok(topDepartureStations);
+        }
+
+        // GET: api/CitybikeTripsMay2021/TopReturnStations
+        [HttpGet("TopReturnStations")]
+        public async Task<ActionResult<IEnumerable<object>>> GetTopReturnStations()
+        {
+            var topReturnStations = await _context.BiketripsMay2021
+                .GroupBy(t => t.Return_station_name)
+                .Select(g => new { Station = g.Key, Count = g.Count() })
+                .OrderByDescending(g => g.Count)
+                .Take(10)
+                .ToListAsync();
+
+            return Ok(topReturnStations);
+        }
     }
 }
