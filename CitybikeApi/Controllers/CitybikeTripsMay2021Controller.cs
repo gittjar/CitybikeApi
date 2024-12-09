@@ -113,5 +113,32 @@ namespace CitybikeApi.Controllers
 
             return Ok(topReturnStations);
         }
+              // GET: api/CitybikeTripsMay2021/AllStations
+        [HttpGet("AllStations")]
+        public async Task<ActionResult<IEnumerable<StationData>>> GetAllStations()
+        {
+            var departureCounts = await _context.BiketripsMay2021
+                .GroupBy(t => t.Departure_station_name)
+                .Select(g => new StationData { Station = g.Key, DepartureCount = g.Count(), ReturnCount = 0 })
+                .ToListAsync();
+
+            var returnCounts = await _context.BiketripsMay2021
+                .GroupBy(t => t.Return_station_name)
+                .Select(g => new StationData { Station = g.Key, DepartureCount = 0, ReturnCount = g.Count() })
+                .ToListAsync();
+
+            var combinedCounts = departureCounts
+                .Concat(returnCounts)
+                .GroupBy(x => x.Station)
+                .Select(g => new StationData
+                {
+                    Station = g.Key,
+                    DepartureCount = g.Sum(x => x.DepartureCount),
+                    ReturnCount = g.Sum(x => x.ReturnCount)
+                })
+                .ToList();
+
+            return Ok(combinedCounts);
+        }
     }
 }
