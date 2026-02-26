@@ -11,6 +11,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add CORS policy for frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        builder => builder
+            .WithOrigins("https://solitacitybike.azurewebsites.net")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 builder.Services.AddDbContext<CitybikeDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
     throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
@@ -38,6 +48,9 @@ app.UseSwaggerUI(c =>
     c.DocumentTitle = "Citybike API Documentation"; // Set custom page title
     c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
 });
+
+// Enable CORS for frontend
+app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 
