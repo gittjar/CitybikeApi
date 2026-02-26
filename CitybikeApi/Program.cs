@@ -3,7 +3,32 @@ using CitybikeApi;
 using CitybikeApi.Data;
 using Microsoft.Extensions.FileProviders;
 
+// Load environment variables from .env file
+var envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(envFilePath))
+{
+    foreach (var line in File.ReadAllLines(envFilePath))
+    {
+        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+            continue;
+            
+        var parts = line.Split('=', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 2)
+        {
+            Environment.SetEnvironmentVariable(parts[0].Trim(), parts[1].Trim());
+        }
+    }
+}
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Build connection string from environment variables
+var dbServer = Environment.GetEnvironmentVariable("DB_SERVER") ?? "tcp:stone900.database.windows.net,1433";
+var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "GreenlizardDb";
+var dbUser = Environment.GetEnvironmentVariable("DB_USER") ?? "kingdat4";
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "";
+
+var connectionString = $"Server={dbServer};Initial Catalog={dbName};Persist Security Info=False;User ID={dbUser};Password={dbPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -22,12 +47,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<CitybikeDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
-    throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddDbContext<CitybiketripsMay2021DBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CitybikeDBContext") ??
-    throw new InvalidOperationException("Connection string 'CitybikeDBContext' not found.")));
+    options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
@@ -35,7 +58,7 @@ var app = builder.Build();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)),
+        Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? Directory.GetCurrentDirectory()),
     RequestPath = "/static"
 });
 
